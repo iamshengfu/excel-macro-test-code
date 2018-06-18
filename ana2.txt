@@ -1,0 +1,378 @@
+Sub removen1()
+Dim i As Long
+Dim j As Long
+Dim c As Long
+Dim LastRow As Long
+    With ActiveSheet
+        LastRow = .Cells(.Rows.count, "EY").End(xlUp).Row
+    End With
+Dim count As Integer
+For i = 174 To 192 Step 3
+    For j = 3 To LastRow
+        If Cells(j, i).Value = -1 Then
+            Cells(j, i - 1).ClearContents
+            Cells(j, i).ClearContents
+            Cells(j, i + 1).ClearContents
+            count = count + 1
+        End If
+    Next j
+Next i
+MsgBox count
+End Sub
+
+Sub addcor()
+Dim i As Long
+Rows("2:2").Select
+Application.CutCopyMode = False
+Selection.Delete Shift:=xlUp
+Columns("G:R").Select
+Range("R1").Activate
+Selection.Delete Shift:=xlToLeft
+Columns("F:F").Select
+Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+Selection.Insert Shift:=xlToRight, CopyOrigin:=xlFormatFromLeftOrAbove
+Cells(1, 6).Value = "cor sign"
+Cells(1, 7).Value = "cor positive"
+Cells(1, 8).Value = "cor negative"
+    Dim LastRow As Long
+    With ActiveSheet
+        LastRow = .Cells(.Rows.count, "A").End(xlUp).Row
+    End With
+For i = 2 To LastRow
+    If Cells(i, 5).Value > 0 Then
+        Cells(i, 6).Value = 1
+        Cells(i, 7).Value = 1
+    Else
+        Cells(i, 6).Value = -1
+        Cells(i, 8).Value = -1
+    End If
+Next i
+End Sub
+
+Sub appcor()
+Dim LastRow As Long
+With ActiveSheet
+    LastRow = .Cells(.Rows.count, "E").End(xlUp).Row
+End With
+
+Dim i As Long
+
+For i = 2 To LastRow
+    Select Case Cells(i, 5).Value
+        Case 1.95 To 2
+            Cells(i, 5).Value = 1.975
+        Case 1.9 To 1.94999
+            Cells(i, 5).Value = 1.925
+        Case 1.85 To 1.89999
+            Cells(i, 5).Value = 1.875
+        Case 1.8 To 1.84999
+            Cells(i, 5).Value = 1.825
+        Case 1.75 To 1.79999
+            Cells(i, 5).Value = 1.775
+        Case 1.7 To 1.74999
+            Cells(i, 5).Value = 1.725
+        Case 1.65 To 1.69999
+            Cells(i, 5).Value = 1.675
+        Case 1.6 To 1.64999
+            Cells(i, 5).Value = 1.625
+        Case 1.55 To 1.69999
+            Cells(i, 5).Value = 1.575
+        Case 1.5 To 1.54999
+            Cells(i, 5).Value = 1.525
+        Case 1.45 To 1.49999
+            Cells(i, 5).Value = 1.475
+        Case 1.4 To 1.44999
+            Cells(i, 5).Value = 1.425
+        Case 1.35 To 1.39999
+            Cells(i, 5).Value = 1.375
+        Case 1.3 To 1.34999
+            Cells(i, 5).Value = 1.325
+        Case 1.25 To 1.29999
+            Cells(i, 5).Value = 1.275
+        Case 1.2 To 1.24999
+            Cells(i, 5).Value = 1.225
+        Case -2 To -1.95
+            Cells(i, 5).Value = -1.975
+        Case -1.94999 To -1.9
+            Cells(i, 5).Value = -1.925
+        Case -1.89999 To -1.85
+            Cells(i, 5).Value = -1.875
+        Case -1.84999 To -1.8
+            Cells(i, 5).Value = -1.825
+        Case -1.79999 To -1.75
+            Cells(i, 5).Value = -1.775
+        Case -1.74999 To -1.7
+            Cells(i, 5).Value = -1.725
+        Case -1.69999 To -1.65
+            Cells(i, 5).Value = -1.675
+        Case -1.64999 To -1.6
+            Cells(i, 5).Value = -1.625
+        Case -1.69999 To -1.55
+            Cells(i, 5).Value = -1.575
+        Case -1.54999 To -1.5
+            Cells(i, 5).Value = -1.525
+        Case -1.49999 To -1.45
+            Cells(i, 5).Value = -1.475
+        Case -1.44999 To -1.4
+            Cells(i, 5).Value = -1.425
+        Case -1.39999 To -1.35
+            Cells(i, 5).Value = -1.375
+        Case -1.34999 To -1.3
+            Cells(i, 5).Value = -1.325
+        Case -1.29999 To -1.25
+            Cells(i, 5).Value = -1.275
+        Case -1.24999 To -1.2
+            Cells(i, 5).Value = -1.225
+        Case Else
+            Cells(i, 5).Value = Null
+    End Select
+Next i
+
+End Sub
+Sub yellow()
+    With Selection.Interior
+        .Pattern = xlSolid
+        .PatternColorIndex = xlAutomatic
+        .Color = 65535
+        .TintAndShade = 0
+        .PatternTintAndShade = 0
+    End With
+End Sub
+
+Sub analyse_volpd()
+
+    Columns("C:AD").Delete Shift:=xlToLeft
+End Sub
+Sub randclear()
+Dim i As Long
+Dim LastRow As Long
+    With ActiveSheet
+        LastRow = .Cells(.Rows.count, "A").End(xlUp).Row
+    End With
+For i = 2 To LastRow
+    If Abs(Cells(i, 1).Value - Cells(i, 2).Value) < 50 And Cells(i, 1).Value <> 0 Then
+        Rows(i).EntireRow.Delete
+        i = i - 1
+        Application.StatusBar = i
+    End If
+Next i
+
+End Sub
+Sub pivot1()
+'
+' 宏1 宏
+'
+
+'
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("cor sign")
+        .Orientation = xlPageField
+        .position = 1
+    End With
+    Cells(1, 1).Select
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("target is peak")
+        .Orientation = xlPageField
+        .position = 1
+    End With
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("cor")
+        .Orientation = xlPageField
+        .position = 1
+    End With
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("length")
+        .Orientation = xlRowField
+        .position = 1
+    End With
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("tick size")
+        .Orientation = xlColumnField
+        .position = 1
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("cor positive"), "求和项:cor positive", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("meaningful i"), "求和项:meaningful i", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("cor negative"), "求和项:cor negative", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("dmfu"), "求和项:dmfu", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).DataPivotField
+        .Orientation = xlRowField
+        .position = 2
+    End With
+
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:cor negative")
+        .Caption = "计数项:cor negative"
+        .Function = xlCount
+    End With
+End Sub
+Sub clear6000()
+Dim i As Integer
+Range("6000:50000").ClearContents
+End Sub
+
+Function findrowno(colomn As Long)
+Dim i As Long
+Dim lRow As Long
+Dim count As Long
+lRow = Cells(Rows.count, colomn).End(xlUp).Row
+For i = 1 To lRow
+    If Cells(i, colomn).Value <> "" Then
+        count = count + 1
+    End If
+Next i
+findrowno = count
+End Function
+Sub countmeaningful(colomn As Long, abc As Long)
+Dim i As Integer
+Dim i2 As Integer
+Dim i1 As Integer
+Dim i5 As Integer
+Dim i75 As Integer
+Dim i10 As Integer
+Dim ip5 As Integer
+Dim LastRow As Long
+LastRow = findrowno(abc)
+For i = 2 To CInt(LastRow / 16)
+    If Cells(i, colomn).Value = 1 Then
+        ip5 = ip5 + 1
+    End If
+Next i
+For i = 2 To CInt(LastRow / 8)
+    If Cells(i, colomn).Value = 1 Then
+        i1 = i1 + 1
+    End If
+Next i
+For i = 2 To CInt(LastRow / 4)
+    If Cells(i, colomn).Value = 1 Then
+        i2 = i2 + 1
+    End If
+Next i
+
+For i = 2 To CInt(LastRow / 2)
+    If Cells(i, colomn).Value = 1 Then
+        i5 = i5 + 1
+    End If
+Next i
+For i = CInt(LastRow / 2) To CInt(LastRow * 0.75)
+    If Cells(i, colomn).Value = 1 Then
+        i75 = i75 + 1
+    End If
+Next i
+For i = CInt(LastRow / 2) To CInt(LastRow)
+    If Cells(i, colomn).Value = 1 Then
+        i10 = i10 + 1
+    End If
+Next i
+
+i10 = i5 + i10
+i75 = i5 + i75
+MsgBox "1/16  " & "1/8  " & "1/4   " & " 2nd " & " 3rd " & "   4th " & vbNewLine & Format(ip5 / (i10 / 16), "0.00") & "  " & Format(i1 / (i10 / 8), "0.00") & "  " & Format(i2 / (i10 / 4), "0.00") & "  " & Format((i5 - i2) / (i10 / 4), "0.00") & "  " & Format((i75 - i5) / (i10 / 4), "0.00") & "  " & Format((i10 - i75) / (i10 / 4), "0.00") & " out of  " & i10
+End Sub
+
+Sub countmeaningful_demeaningful()
+Call countmeaningful(42, 1)
+Call countmeaningful(54, 1)
+End Sub
+
+
+
+
+
+Sub ffaa()
+Dim i As Long
+For i = 2 To findrowno(1)
+    If Abs(Cells(i, 1).Value - Cells(i, 2).Value) < 150 Then
+        Cells(i, 1).EntireRow.ClearContents
+    End If
+Next i
+    
+End Sub
+
+Sub expect_actual()
+'
+' 宏1 宏
+'
+
+'
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("cor sign")
+        .Orientation = xlPageField
+        .position = 1
+    End With
+    Cells(1, 1).Select
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("target is peak")
+        .Orientation = xlPageField
+        .position = 1
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("expected change 1h"), "求和项:expected change 1h", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("actual change 1h"), "求和项:actual change 1h", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("ref location1"), "求和项:ref location1", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:ref location1")
+        .Caption = "计数项:ref location1"
+        .Function = xlCount
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("expected change 2"), "求和项:expected change 2", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("actual change2"), "求和项:actual change2", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("ref location2"), "求和项:ref location2", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:ref location2")
+        .Caption = "计数项:ref location2"
+        .Function = xlCount
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("expected change 4"), "求和项:expected change 4", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("actual change 4"), "求和项:actual change 4", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("ref location3"), "求和项:ref location3", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:ref location3")
+        .Caption = "计数项:ref location3"
+        .Function = xlCount
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("expected change 8"), "求和项:expected change 8", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("actual change 8"), "求和项:actual change 8", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("ref location4"), "求和项:ref location4", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:ref location4")
+        .Caption = "计数项:ref location4"
+        .Function = xlCount
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("expected change 16"), "求和项:expected change 16", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("actual change16"), "求和项:actual change16", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("ref location5"), "求和项:ref location5", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:ref location5")
+        .Caption = "计数项:ref location5"
+        .Function = xlCount
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("expected change 24"), "求和项:expected change 24", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("actual change 24"), "求和项:actual change 24", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("ref location6"), "求和项:ref location6", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:ref location6")
+        .Caption = "计数项:ref location6"
+        .Function = xlCount
+    End With
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("expected change 48"), "求和项:expected change 48", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("actual change 48"), "求和项:actual change 48", xlSum
+    ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).AddDataField ActiveSheet.PivotTables(ActiveCell.PivotTable.Name _
+        ).PivotFields("ref location7"), "求和项:ref location7", xlSum
+    With ActiveSheet.PivotTables(ActiveCell.PivotTable.Name).PivotFields("求和项:ref location7")
+        .Caption = "计数项:ref location7"
+        .Function = xlCount
+    End With
+End Sub
+
+
+

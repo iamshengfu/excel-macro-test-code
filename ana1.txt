@@ -1,0 +1,583 @@
+Sub ismax()
+
+Dim i As Long
+Dim j As Long
+Dim max As Double
+Dim min As Double
+Dim percent As Double
+Dim count As Long
+Dim interval()
+Dim position As Long
+Dim location As Long
+position = 0
+interval = Array(12, 24, 48, 96, 192, 288, 576)
+count = 0
+
+For j = 0 To 6
+    For i = 1 To 9500
+        
+        If (i + interval(j)) <= 9500 Then
+            
+            max = Application.WorksheetFunction.max(Range(Cells(i + 1, 5), Cells(i + interval(j) + 1, 5)))
+            min = Application.WorksheetFunction.min(Range(Cells(i + 1, 5), Cells(i + interval(j) + 1, 5)))
+            
+            
+            If Cells(i + 1, 5).Value = max Then
+                
+                percent = (max - min) / max
+                
+                If percent >= 0.015 Then
+                    
+                    count = count + 1
+                    location = (Application.WorksheetFunction.Match(min, Range(Cells(i + 1, 5), Cells(i + interval(j) + 1, 5)), 0) - 1) * 5
+                    Cells(i + 1, 6).Value = -1
+                    Cells(i + 1, 7 + position * 3).Value = max
+                    Cells(i + 1, 8 + position * 3).Value = percent
+                    Cells(i + 1, 1).EntireRow.Interior.ColorIndex = 22
+                    Cells(i + 1, 9 + position * 3).Value = location
+                    
+                End If
+                
+                percent = 0
+                
+            End If
+            
+        End If
+        
+    Next i
+        Cells(3, 7 + position * 3).Value = count
+        count = 0
+        position = position + 1
+        
+Next j
+        
+        
+End Sub
+
+Sub ismin()
+    
+    Dim i As Long
+    Dim j As Long
+    Dim max As Double
+    Dim min As Double
+    Dim percent As Double
+    Dim count As Long
+    Dim interval()
+    Dim position As Long
+    Dim location As Long
+    position = 7
+    interval = Array(12, 24, 48, 96, 192, 288, 576)
+    count = 0
+    
+    For j = 0 To 6
+        
+        For i = 1 To 9500
+        
+            If i + interval(j) <= 9500 Then
+                
+                max = Application.WorksheetFunction.max(Range(Cells(i + 1, 5), Cells(i + interval(j) + 1, 5)))
+                min = Application.WorksheetFunction.min(Range(Cells(i + 1, 5), Cells(i + interval(j) + 1, 5)))
+                
+                If Cells(i + 1, 5).Value = min Then
+                    
+                    percent = (max - min) / min
+                    
+                    If percent >= 0.015 Then
+                        
+                        count = count + 1
+                        location = (Application.WorksheetFunction.Match(max, Range(Cells(i + 1, 5), Cells(i + interval(j) + 1, 5)), 0) - 1) * 5
+                        Cells(i + 1, 6).Value = 1
+                        Cells(i + 1, 7 + position * 3).Value = min
+                        Cells(i + 1, 8 + position * 3).Value = percent
+                        Cells(i + 1, 1).EntireRow.Interior.ColorIndex = 43
+                        Cells(i + 1, 9 + position * 3).Value = location
+                    End If
+                    
+                    percent = 0
+                    
+                End If
+                
+            End If
+            
+        Next i
+            
+            Cells(3, 7 + position * 3).Value = count
+            count = 0
+            position = position + 1
+            
+    Next j
+            
+            
+End Sub
+
+Sub calvolume()
+
+Dim interval()
+interval = Array(1, 3, 12, 2 * 12, 4 * 12, 6 * 12, 12 * 12, 24 * 12, 36 * 12, 48 * 12, 72 * 12, 168 * 12)
+Dim position As Long
+position = 51
+Dim i As Long
+Dim j As Long
+Dim myrange As Range
+Dim vol As Long
+Dim test As Double
+For j = 0 To 11
+    For i = 1 To 9500
+        If i >= interval(j) + 3 Then
+            vol = i - interval(j) + 1
+            Set myrange = Range(Cells(vol, 4), Cells(i, 4))
+            test = Application.WorksheetFunction.Sum(myrange)
+            Cells(i, position).Value = test
+        End If
+    Next i
+    position = position + 1
+Next j
+            
+
+End Sub
+
+Sub price_and_volume_corsum()
+
+'Dim price(1 To 9500, 1 To 6, 1 To 9, 1 To 9500) As Byte
+'Dim volume(1 To 9500, 1 To 6, 1 To 9, 1 To 9500) As Byte
+'volume reflength 2h 4h 6h 12h 24h 36h 48h 72h 7d
+line1:
+On Error GoTo line1
+On Error GoTo -1
+Application.ScreenUpdating = False
+Application.Calculation = xlCalculationManual
+Dim tickinterval()
+Dim wavelength()
+'Dim refvol()
+'refvol = Array(2, 4, 6, 12, 24, 36, 48, 72, 168)
+tickinterval = Array(1, 3, 12, 24, 48, 72) 'j5
+wavelength = Array(4, 6, 8, 10, 12, 16, 20, 25, 30)   'k8
+Dim cor As Single, corv As Single, corref As Single
+Dim i As Long
+Dim j As Long
+Dim k As Long
+Dim jk As Long
+Dim l As Long
+Dim m As Long
+Dim n As Long
+Dim o As Long
+Dim p As Long
+Dim q As Long
+Dim count8 As Long
+Dim count8temp As Long
+Dim count9 As Long
+Dim countp As Long
+Dim countn  As Long
+Dim normaliser As Double
+Dim normaliser2 As Double
+Dim ref As Double
+Dim ref2 As Double
+Dim pxarray() As Double
+Dim pyarray() As Double
+Dim vxarray() As Double
+Dim vyarray() As Double
+Dim volpd(7) As Double
+Dim volpdmin As Double
+volpdmin = 1000000
+Dim tpvolsum As Double
+Dim tpvolsum2 As Double
+Dim corsum As Single
+Dim trigger As Double
+Dim display As String
+Dim currenti As Long
+Dim xi As Long
+Dim templ As Long
+Dim templp As Long
+Dim templn As Long
+Dim templp2 As Long
+Dim templn2 As Long
+Dim maxcount As Long
+Dim counti As Long
+counti = Cells(2, 250).Value
+maxcount = countlocalmax()
+Dim mincount As Long
+mincount = countlocalmin()
+Cells(2, 226).Value = maxcount
+Cells(2, 228).Value = mincount
+count8 = Cells(2, 210).Value
+Range(Cells(count8 + 3, 155), Cells(count8 + 3, 155).End(xlDown).Offset(0, 94)).ClearContents
+count9 = Cells(2, 211).Value
+currenti = Cells(2, 209).Value
+trigger = 1.9
+'trigger = Array(1.82, 1.8, 1.8, 1.75, 1.7, 1.7, 1.65, 1.65, 1.65)
+Dim triggerarray(0 To 5, 0 To 8) As Single
+Dim t1 As Integer, t2 As Integer
+For t1 = 252 To 257
+    For t2 = 2 To 10
+        triggerarray(t1 - 252, t2 - 2) = Cells(t2, t1).Value
+    Next t2
+Next t1
+For xi = 1 To 9500
+
+    i = Application.WorksheetFunction.RandBetween(1800, 9450)
+
+    Cells(2, 207).Value = count8
+    Cells(2, 208).Value = count9
+    Cells(2, 209).Value = i
+    count8temp = count8 + 3
+    
+    For l = 1800 To 9500
+    
+        If Cells(l, 6).Value <> 0 And Abs(l - templ) >= 3 And Abs(i - l) > 150 Then
+            
+            templ = l
+            
+            For j = 2 To 3
+            'On Error Resume Next
+                
+                For k = 1 To 3
+                'On Error Resume Next
+                    jk = tickinterval(j) * wavelength(k)
+                    If (i - 3) >= jk And (l - 3) >= jk Then
+                    
+                        ReDim pxarray(wavelength(k))
+                        ReDim pyarray(wavelength(k))
+                        ReDim vxarray(wavelength(k))
+                        ReDim vyarray(wavelength(k))
+                        
+                        If Cells(i - jk + 3, 51 + j).Value > 1 And Cells(l - jk + 3, 51 + j).Value > 1 Then
+                        
+                            For m = 0 To wavelength(k)
+                            
+                                vxarray(m) = Cells(i - m * tickinterval(j), 51 + j).Value
+                                vyarray(m) = Cells(l - m * tickinterval(j), 51 + j).Value
+                                
+                                
+                                
+                            Next m
+
+                            
+                            corv = Application.WorksheetFunction.Correl(vxarray, vyarray)
+                        Else: Exit For
+
+                        End If
+                        
+                        For m = 0 To wavelength(k)
+                        
+                            pxarray(m) = Cells(i - m * tickinterval(j), 5).Value
+                            pyarray(m) = Cells(l - m * tickinterval(j), 5).Value
+
+                        Next m
+
+                            
+                        cor = Application.WorksheetFunction.Correl(pxarray, pyarray)
+
+
+
+                        
+
+                                
+
+                        If (cor + corv) >= 1.8 Then
+                            count9 = count9 + 1
+                        End If
+                        corsum = cor + corv
+                        If corsum >= triggerarray(j, k) Then ' editded
+                            count8 = count8 + 1
+                            Cells(count8 + 2, 155).Value = i
+                            Cells(count8 + 2, 156).Value = l
+                            Cells(count8 + 2, 157).Value = wavelength(k)
+                            Cells(count8 + 2, 158).Value = tickinterval(j) * 5
+                            Cells(count8 + 2, 159).Value = cor + corv
+                            Cells(count8 + 2, 160).Value = Cells(l, 6).Value
+
+                            
+                            Cells(count8 + 2, 194).Value = corv
+                            Cells(count8 + 2, 195).Value = cor
+                            Cells(count8 + 2, 196).Value = corsum
+                            Call findmm(i, count8)
+                            Call compare_change(l, i, count8)
+                            
+                            If templp <> l And Cells(l, 6).Value = 1 Then
+                                countp = countp + 1
+                                templp = l
+                            ElseIf templn <> l And Cells(l, 6).Value = -1 Then
+                                countn = countn + 1
+                                templn = l
+                            End If
+
+                            
+                        ElseIf corsum <= -1 * triggerarray(j, k) Then
+                            count8 = count8 + 1
+                            Cells(count8 + 2, 155).Value = i
+                            Cells(count8 + 2, 156).Value = l
+                            Cells(count8 + 2, 157).Value = wavelength(k)
+                            Cells(count8 + 2, 158).Value = tickinterval(j) * 5
+                            Cells(count8 + 2, 159).Value = cor + corv
+                            Cells(count8 + 2, 160).Value = Cells(l, 6).Value
+
+                            
+                            Cells(count8 + 2, 194).Value = corv
+                            Cells(count8 + 2, 195).Value = cor
+                            Cells(count8 + 2, 196).Value = corsum
+                            Call findmm(i, count8)
+                            Call compare_change2(l, i, count8)
+                            
+                            If templp2 <> l And Cells(l, 6).Value = 1 Then
+                                countp2 = countp2 + 1
+                                templp2 = l
+                            ElseIf templn2 <> l And Cells(l, 6).Value = -1 Then
+                                countn2 = countn2 + 1
+                                templn2 = l
+                            End If
+                                                           
+                        End If
+                        'Debug.Print "i ="; i; "   l = "; l; "    j = "; j; "    k = "; k; "   count8 = "; count8; "   count9 = "; count9; "cor  "; cor; "  corv: "; corv; "  corsum: "; corsum; "  count: "; count; "  pd: "; "trig   "; trigger - (Sqr(k) + j) * 0.0766
+                        Application.StatusBar = "i =" + CStr(i) + "   l = " + CStr(l) + "    j = " + CStr(j) + "    k = " + CStr(k) + "   count8 = " + CStr(count8) + "   count9 = " + CStr(count9) + "    trig" + CStr(triggerarray(j, k)) + "   cor  " + CStr(cor)
+                        cor = -1
+                        corv = -1
+                        volpdmin = 100000000
+
+                        DoEvents
+
+                    End If
+                Next k
+            Next j
+        End If
+    Next l
+        If count8 + 3 > count8temp Then
+            Cells(2, 210).Value = count8
+            Cells(2, 211).Value = count9
+            counti = counti + 1
+            If counti Mod 800 = 0 Then
+                ActiveWorkbook.Save
+            End If
+            Cells(2, 250).Value = counti
+            Cells(counti + 2, 227).Value = i
+            Cells(counti + 2, 228).Value = countp
+            Cells(counti + 2, 229).Value = countp / maxcount
+            Cells(counti + 2, 230).Value = countn
+            Cells(counti + 2, 231).Value = countn / mincount
+            Cells(counti + 2, 232).Value = countp2
+            Cells(counti + 2, 233).Value = countp2 / maxcount
+            Cells(counti + 2, 234).Value = countn2
+            Cells(counti + 2, 235).Value = countn2 / mincount
+            For q = 0 To 6
+                Cells(counti + 2, 236 + 2 * q).Value = Application.WorksheetFunction.Sum(Range(Cells(count8temp, 173 + 3 * q), Cells(count8 + 2, 173 + 3 * q)))
+                DoEvents
+                Cells(counti + 2, 237 + 2 * q).Value = Application.WorksheetFunction.Sum(Range(Cells(count8temp, 174 + 3 * q), Cells(count8 + 2, 174 + 3 * q)))
+                DoEvents
+            Next q
+            
+            
+            countp = 0
+            countn = 0
+            countp2 = 0
+            countn2 = 0
+            templp = 0
+            templn = 0
+            templp2 = 0
+            templn2 = 0
+        End If
+            
+Next xi
+
+
+
+
+End Sub
+
+Sub findmm(a As Long, b As Long)
+
+Dim x As Long
+Dim time()
+time = Array(12, 24, 48, 96)
+For x = 1 To 4
+
+    Cells(b + 2, 163 + x).Value = (Application.WorksheetFunction.max(Range(Cells(a, 5), Cells(a + time(x - 1), 5))) - Cells(a, 5).Value) / Cells(a, 5).Value
+    Cells(b + 2, 167 + x).Value = (Application.WorksheetFunction.min(Range(Cells(a, 5), Cells(a + time(x - 1), 5))) - Cells(a, 5).Value) / Cells(a, 5).Value
+    'MsgBox Cells(b + 2, 163 + x).Value
+
+Next x
+
+End Sub
+Sub compare_change(i As Long, j As Long, count As Long)
+
+Dim position As Long
+Dim x As Long
+Dim ll As Double, mm As Double, nn As Double
+position = 173
+For x = 0 To 6
+    If Cells(i, 6).Value = -1 Then
+        If Cells(i, 8 + x * 3).Value <> 0 Then
+            ll = Cells(i, 8 + x * 3).Value * Cells(i, 6)
+            Cells(count + 2, 173 + 3 * x).Value = ll
+            mm = Cells(i, 8 + x * 3 + 1).Value
+            Cells(count + 2, 175 + 3 * x).Value = mm
+            nn = (Cells(j, 5).Value - Cells(j + (mm / 5), 5).Value) / Cells(j, 5).Value * -1
+            Cells(count + 2, 174 + 3 * x).Value = nn
+        End If
+    ElseIf Cells(i, 6).Value = 1 Then
+        If Cells(i, 28 + x * 3).Value <> 0 Then
+            ll = Cells(i, 29 + x * 3).Value * Cells(i, 6)
+            Cells(count + 2, 173 + 3 * x).Value = ll
+            mm = Cells(i, 29 + x * 3 + 1).Value
+            Cells(count + 2, 175 + 3 * x).Value = mm
+            nn = (Cells(j, 5).Value - Cells(j + (mm / 5), 5).Value) / Cells(j, 5).Value * -1
+            Cells(count + 2, 174 + 3 * x).Value = nn
+        End If
+    End If
+Next x
+comparemore (count + 2)
+comparemoreinverse (count + 2)
+removen1V2 (count + 2)
+End Sub
+Sub compare_change2(i As Long, j As Long, count As Long)
+
+Dim position As Long
+Dim x As Long
+Dim ll As Double, mm As Double, nn As Double
+position = 173
+For x = 0 To 6
+    If Cells(i, 6).Value = -1 Then
+        If Cells(i, 8 + x * 3).Value <> 0 Then
+            ll = Cells(i, 8 + x * 3).Value * Cells(i, 6)
+            Cells(count + 2, 173 + 3 * x).Value = ll
+            mm = Cells(i, 8 + x * 3 + 1).Value
+            Cells(count + 2, 175 + 3 * x).Value = mm
+            nn = (Cells(j, 5).Value - Cells(j + (mm / 5), 5).Value) / Cells(j, 5).Value * -1
+            Cells(count + 2, 174 + 3 * x).Value = nn
+        End If
+    ElseIf Cells(i, 6).Value = 1 Then
+        If Cells(i, 28 + x * 3).Value <> 0 Then
+            ll = Cells(i, 29 + x * 3).Value * Cells(i, 6)
+            Cells(count + 2, 173 + 3 * x).Value = ll
+            mm = Cells(i, 29 + x * 3 + 1).Value
+            Cells(count + 2, 175 + 3 * x).Value = mm
+            nn = (Cells(j, 5).Value - Cells(j + (mm / 5), 5).Value) / Cells(j, 5).Value * -1
+            Cells(count + 2, 174 + 3 * x).Value = nn
+        End If
+    End If
+Next x
+comparemore (count + 2)
+comparemoreinverse (count + 2)
+removen1V2 (count + 2)
+End Sub
+Sub check_columnnumber()
+
+Dim i As Long
+For i = 7 To 500
+    If Cells(2, i + 1).Value <> 0 And Cells(2, i + 1).Value <> Cells(2, i).Value + 1 Then
+    MsgBox "col number wrong"
+    Exit For
+    End If
+Next i
+MsgBox "ok"
+End Sub
+
+Sub comparemore(aa As Long)
+Dim x As Double
+Dim y As Double
+Dim bb As Long
+Dim count As Long
+count = 0
+For bb = 0 To 6
+    If Cells(aa, 173 + bb * 3).Value <> 0 Then
+        x = Cells(aa, 173 + bb * 3).Value
+        If x = 0 Then x = 0.001
+        y = Cells(aa, 173 + bb * 3 + 1).Value
+        If y = 0 Then y = 0.001
+        If Abs((x - y) / x) < 0.5 Or Abs((x - y) / y) < 0.5 Then
+            count = count + 1
+            Cells(aa, 205).Value = 1
+            Cells(aa, 206).Value = 1
+            Cells(aa, bb + 210).Value = bb
+        End If
+    End If
+Next bb
+Cells(aa, 207).Value = count
+
+count = 0
+'DoEvents
+'Application.StatusBar = CStr(aa)
+End Sub
+Sub comparemoreinverse(aa As Long)
+Dim x As Double
+Dim y As Double
+Dim bb As Long
+Dim count As Long
+count = 0
+For bb = 0 To 6
+    If Cells(aa, 173 + bb * 3).Value <> 0 Then
+        x = Cells(aa, 173 + bb * 3).Value
+        If x = 0 Then x = 0.001
+        y = Cells(aa, 173 + bb * 3 + 1).Value
+        If y = 0 Then y = 0.001
+        If Abs((x + y) / x) < 0.5 Or Abs((x + y) / y) < 0.5 Then
+            count = count + 1
+            Cells(aa, 217).Value = 1
+            Cells(aa, bb + 219).Value = bb
+        End If
+    End If
+Next bb
+Cells(aa, 218).Value = count
+count = 0
+'DoEvents
+'Application.StatusBar = CStr(aa)
+End Sub
+Sub docomparemore()
+Dim i As Integer
+For i = 3 To 10000
+    comparemore (i)
+    comparemoreinverse (i)
+Next i
+End Sub
+Function countlocalmax() As Long
+Dim LastRow As Long
+    With ActiveSheet
+        LastRow = .Cells(.Rows.count, "F").End(xlUp).Row
+    End With
+Dim x As Long
+x = 0
+Dim i As Long
+For i = 3 To LastRow
+    If Cells(i, 6).Value = 1 Then
+        x = x + 1
+    End If
+Next i
+countlocalmax = x
+End Function
+Function countlocalmin() As Long
+Dim LastRow As Long
+    With ActiveSheet
+        LastRow = .Cells(.Rows.count, "F").End(xlUp).Row
+    End With
+Dim x As Long
+x = 0
+Dim i As Long
+For i = 3 To LastRow
+    If Cells(i, 6).Value = -1 Then
+        x = x + 1
+    End If
+Next i
+countlocalmin = x
+End Function
+Sub removen1V2(count As Long)
+Dim i As Integer
+
+For i = 174 To 192 Step 3
+    If Cells(count, i).Value = -1 Then
+        Cells(count, i - 1).ClearContents
+        Cells(count, i).ClearContents
+        Cells(count, i + 1).ClearContents
+    End If
+Next i
+End Sub
+
+Sub test()
+Dim i As Long, j As Long
+Dim a As Double
+Dim b As Long
+j = 87
+i = 87
+x = 1
+a = (Cells(j, 5).Value - Cells(j + (Cells(i, 29 + x * 3 + 1).Value / 5), 5).Value) / Cells(j, 5).Value
+MsgBox a
+End Sub
+
+

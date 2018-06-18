@@ -1,0 +1,149 @@
+Sub clearX3()
+
+Application.ScreenUpdating = False
+Application.Calculation = xlCalculationManual
+Application.EnableEvents = True
+'call fillref()
+'Range(Cells(3, 227), Cells(3, 227).End(xlDown).Offset(0, 22)).RemoveDuplicates Columns:=1, Header:=xlNo
+'Cells(2, 250).Value = findrowno(227)
+'Range(Cells(3, 155), Cells(3, 155).End(xlDown).Offset(0, 70)).RemoveDuplicates Columns:=Array(1, 2, 3, 4), Header:=xlNo
+Range(Cells(3, 261), Cells(3, 260).End(xlDown).Offset(0, 15)).ClearContents
+Dim randomi As Long
+Dim i As Long
+Dim jup As Long, jdown As Long, j As Long
+Dim kup As Long, kdown As Long, k As Long
+Dim count As Long
+Dim ae(0 To 6) As Double
+Dim e As Long
+Dim psign As Long
+Dim csign As Long, ctemp As Byte
+
+Dim ref As Long
+Dim reftarget As Range
+Dim Ctarget As Range 'current target
+Dim Srange As Range 'search range
+Set Ctarget = Cells(1, 155)
+Set Srange = Range(Ctarget, Ctarget.End(xlDown))
+Set Atarget = Cells(1, 259)
+Set Arange = Range(Atarget, Atarget.End(xlDown))
+Dim a As Long
+
+
+
+For i = 3 To findrowno(227)
+    randomi = Cells(i, 227).Value
+    For e = 0 To 6
+        If Abs(Cells(i, 236 + 2 * e).Value) > 0.1 Then
+            ae(e) = Cells(i, 237 + 2 * e) / Cells(i, 236 + 2 * e)
+        Else: ae(e) = 0
+        End If
+    Next e
+    jup = Srange.Find(what:=randomi, searchdirection:=xlNext).Row
+    jdown = Srange.Find(what:=randomi, searchdirection:=xlPrevious).Row
+    ref = 100
+    'Sleep (1000)
+    For j = jup To jdown
+        
+        If Cells(j, 156).Value <> ref Then
+            ref = Cells(j, 156).Value
+
+            If Cells(j, 159).Value > 0 Then
+                csign = 1
+                ctemp = 0
+            Else
+                csign = -1
+                ctemp = 1
+            End If
+            psign = Cells(j, 160).Value
+            a = Arange.Find(ref).Row
+    
+            For e = 0 To 6
+                Cells(a, 262 + 2 * e + ctemp).Value = Cells(a, 262 + 2 * e + ctemp).Value + ae(e) * psign
+            Next e
+        End If
+    Next j
+    Application.StatusBar = "i= " & CStr(i)
+                 
+Next i
+
+End Sub
+Sub testWeightSum()
+Application.ScreenUpdating = False
+Application.Calculation = xlCalculationManual
+Application.EnableEvents = True
+Dim ref As Long
+Dim reftarget As Range
+Dim Ctarget As Range 'current target
+Dim Srange As Range 'search range
+Set Ctarget = Cells(1, 155)
+Set Srange = Range(Ctarget, Ctarget.End(xlDown))
+Set Atarget = Cells(1, 259)
+Set Arange = Range(Atarget, Atarget.End(xlDown))
+Dim a As Long
+Dim e As Integer
+Dim x As Double, y As Double
+Dim aesum()
+Dim time()
+time() = Array(12, 24, 48, 96, 192, 288, 240)
+
+For i = 3 To findrowno(227)
+    randomi = Cells(i, 227).Value
+
+    jup = Srange.Find(what:=randomi, searchdirection:=xlNext).Row
+    jdown = Srange.Find(what:=randomi, searchdirection:=xlPrevious).Row
+    ref = 100
+    'Sleep (1000)
+    ReDim aesum(0 To 13)
+    For j = jup To jdown
+        
+        If Cells(j, 156).Value <> ref Then
+            ref = Cells(j, 156).Value
+            a = Arange.Find(ref).Row
+            For e = 0 To 13
+                aesum(e) = aesum(e) + Cells(a, 262 + e)
+            Next e
+
+        End If
+    Next j
+    Application.StatusBar = "i= " & CStr(i)
+    Cells(i, 278).Value = randomi
+    x = Cells(randomi, 5)
+    For e = 0 To 6
+        y = Cells(randomi + time(e), 5)
+        If y <> 0 Then
+            Cells(i, 281 + 3 * e).Value = (y - x) / x * 1000
+        Else
+            Cells(i, 281 + 3 * e).Value = 0
+        End If
+    Next e
+    For e = 0 To 6
+        Cells(i, 279 + 3 * e).Value = aesum(2 * e)
+        Cells(i, 280 + 3 * e).Value = aesum(1 + (2 * e))
+    Next e
+        
+           
+Next i
+End Sub
+
+Sub fillref()
+Dim i As Long
+Dim count As Long
+For i = 1800 To 9600
+    If Cells(i, 6) <> "" Then
+        count = count + 1
+        Cells(count + 2, 259).Value = i
+        Cells(count + 2, 260).Value = Cells(i, 6).Value
+    End If
+Next i
+
+End Sub
+
+
+Sub testef()
+Dim time
+time = Array(12, 24, 48, 96, 192, 288, 240)
+MsgBox time(0)
+End Sub
+
+
+
