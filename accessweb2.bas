@@ -11,3 +11,11 @@ xmlhttp.send
 
 Debug.Print (xmlhttp.responseText)
 End Sub
+
+Sub patecell11(str As String)
+Dim DataObj As New MSForms.DataObject
+DataObj.SetText str
+DataObj.PutInClipboard
+DataObj.GetFromClipboard
+Cells(1, 1).PasteSpecial
+End Sub
